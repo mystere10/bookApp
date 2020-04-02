@@ -32,7 +32,7 @@ class BooksApp extends React.Component {
     }
   }
 
-	
+
   handleSearchBar = () => {
   	this.setState({showSearchPage: false})
   }
