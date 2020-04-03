@@ -27,12 +27,6 @@ class BooksApp extends React.Component {
     })
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.selectedValue !== this.state.selectedValue) {
-    }
-  }
-
-
   handleSearchBar = () => {
   	this.setState({showSearchPage: false})
   }
@@ -53,22 +47,19 @@ class BooksApp extends React.Component {
         }
       });
       BooksAPI.update(book, shelf)
-      console.log("what am passing to the update function", shelf)
     }, 300);
     
   }
 
   handleSelectedValue = (value) => {
     this.setState({selectedValue: value})
-    console.log("What am getting after selection", value)
   }
 
   render() {
-    console.log("The actual state", this.state.selectedValue)
     return (
       <div className="app">
         {this.state.showSearchPage ? (
-          <Search searchBar={this.handleSearchBar} books={this.state.books}/>
+          <Search searchBar={this.handleSearchBar} books={this.state.books} updateBook={this.handleUpdate} selectedValue={this.handleSelectedValue}/>
         ) : (
           <ListBooks onSearch={this.onToggleSearch} allBooks={this.state.books} updateBook={this.handleUpdate} selectedValue={this.handleSelectedValue}/>
         )}

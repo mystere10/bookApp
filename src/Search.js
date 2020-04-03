@@ -1,24 +1,73 @@
 import React, {Component} from 'react';
+import * as BooksAPI from './BooksAPI'
 
 class Search extends Component{
 
   state = {
-    query: ''
+    query: '',
+    books: []
   }
 
   updateQuery = (query) => {
     this.setState(() => ({
-      query: query.trim()
+      query: query
     }))
+    if(this.state.query !== ''){
+      BooksAPI.search(this.state.query).then(result => {
+        if(!result.error){
+          this.setState(() => ({
+            books: result
+          }))
+        }
+      })
+    } 
+  }
+
+  handleSearch = () => {
+    let foundSearch = []
+    const { query, books } = this.state;
+    if (query !== '' && books.length > 1) {
+      foundSearch = books.filter(book => 
+        book.title.toLowerCase().includes(query.toLowerCase()) ||
+        book.authors.filter((author) => query.toLowerCase().includes(author.toLowerCase())))
+    }
+    return foundSearch
   }
 	render(){
     const {query} = this.state
-    const {searchBar, books} = this.props
+    const {searchBar, books, updateBook, selectedValue} = this.props
 
-    const foundSearch = query === "" ? books : books.filter((book) => (
-      book.title.toLowerCase().includes(query.toLowerCase()) ||
-      book.authors[0].toLowerCase().includes(query.toLowerCase())
-    ))
+    let book = null
+
+    if(this.state.books !== undefined || this.state.books.length !== 0){
+      let authors
+
+      const books = this.handleSearch()
+      if(books.length > 0) {
+        book = (
+          books !== this.state.books && books.map((book, index) => (
+            <li key={book.id}>
+              <div className="book">
+                <div className="book-top">
+                  <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
+                  <div className="book-shelf-changer">
+                    <select onChange={(e) => updateBook(book, selectedValue(e.target.value))} defaultValue={book.shelf}>
+                      <option value="move" disabled>Move to...</option>
+                      <option value="currentlyReading">Currently Reading</option>
+                      <option value="wantToRead">Want to Read</option>
+                      <option value="read">Read</option>
+                      <option value="none">None</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="book-title">{book.title}</div>
+                <div className="book-authors">{book.authors}</div>
+              </div>
+            </li>
+          )))
+      }
+    }
+
     	return(
         	<div className="search-books">
             <div className="search-books-bar">
@@ -42,26 +91,7 @@ class Search extends Component{
             </div>
               <div className="search-books-results">
               <ol className="books-grid">
-                {foundSearch.length !== books.length && foundSearch.map((book, index) => (
-                  <li key={book.id}>
-                    <div className="book">
-                      <div className="book-top">
-                        <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
-                        <div className="book-shelf-changer">
-                          <select>
-                            <option value="move" disabled>Move to...</option>
-                            <option value="currentlyReading">Currently Reading</option>
-                            <option value="wantToRead">Want to Read</option>
-                            <option value="read">Read</option>
-                            <option value="none">None</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div className="book-title">{book.title}</div>
-                      <div className="book-authors">{book.authors}</div>
-                    </div>
-                  </li>
-                ))}
+                {book !== null && book}
               </ol>
             </div>
           </div>

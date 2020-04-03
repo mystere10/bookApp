@@ -24,7 +24,6 @@ class ListBooks extends Component{
       function bookShelfCategory(category){
         return allBooks.filter(book => book.shelf === category)
       }
-    console.log(allBooks)
     
       return(
           <div className="app">
