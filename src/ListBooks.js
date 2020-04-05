@@ -38,8 +38,8 @@ class ListBooks extends Component{
                       <h2 className="bookshelf-title">{shelf.title}</h2>
                       <div className="bookshelf-books">
                           <ol className="books-grid">
-                              {bookShelfCategory(shelf.category).map((book) => (
-                                <li key={book.id}>
+                              {bookShelfCategory(shelf.category).map((book, index) => (
+                                <li key={index}>
                                   <div className="book">
                                   <div className="book-top">
                                     <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
