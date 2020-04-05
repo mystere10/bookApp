@@ -15,21 +15,20 @@ class BooksApp extends React.Component {
      */
     showSearchPage: false,
     books: [],
+    query: '',
     selectedValue: 'wantToRead'
-
   }
 
-	
   componentDidMount(){
-    BooksAPI.getAll().then((books) => {
-      this.setState(() => ({
-        books
-      }))
-    })
+      BooksAPI.getAll().then((books) => {
+        this.setState(() => ({
+          books
+        }))
+      })
   }
 
   handleSearchBar = () => {
-  	this.setState({showSearchPage: false})
+    this.setState({showSearchPage: false})
   }
 
   onToggleSearch = () => {
@@ -49,20 +48,35 @@ class BooksApp extends React.Component {
       });
       BooksAPI.update(book, shelf)
     }, 300);
-    
   }
 
   handleSelectedValue = (value) => {
     this.setState({selectedValue: value})
   }
 
+  updateQuery = (query) => {
+    this.setState(() => ({
+      query: query
+    }))
+    if(this.state.query !== ''){
+      BooksAPI.search(this.state.query).then(result => {
+        if(result.length !== undefined || result.length > 0){
+          this.setState((currenState) => ({
+            books: currenState.books.concat(result)
+          }))
+        }
+      })
+    }
+  }
+
   render() {
     return (
-      
       <div className="app">
       <Route exact path="/" render={() => (
         this.state.showSearchPage ? (
-          <Search searchBar={this.handleSearchBar} books={this.state.books} updateBook={this.handleUpdate} selectedValue={this.handleSelectedValue}/>
+          <Search searchBar={this.handleSearchBar} booksInState={this.state.books} updateBook={(book) =>
+            this.handleUpdate(book)
+          } selectedValue={this.handleSelectedValue} updateQuery={this.updateQuery} query={this.state.query}/>
         ) : (
           <ListBooks onSearch={this.onToggleSearch} allBooks={this.state.books} updateBook={this.handleUpdate} selectedValue={this.handleSelectedValue}/>
         )
