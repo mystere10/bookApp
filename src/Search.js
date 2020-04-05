@@ -3,25 +3,6 @@ import {Link} from 'react-router-dom';
 
 class Search extends Component{
 
-  // state = {
-  //   query: ''
-  // }
-
-  // updateQuery = (query) => {
-  //   this.setState(() => ({
-  //     query: query
-  //   }))
-  //   if(this.state.query !== ''){
-  //     BooksAPI.search(this.state.query).then(result => {
-  //       if(result.length !== "undefined" || result.length > 0){
-  //         this.setState(() => ({
-  //           books: result
-  //         }))
-  //       }
-  //     })
-  //   } 
-  // }
-
   handleSearch = () => {
     let foundSearch = []
     const { query, booksInState } = this.props;
